@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "183758729950",
+    "project_id": "midnight-wish-12e73",
+    "storage_bucket": "midnight-wish-12e73.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:183758729950:android:ef4cfdcc81659d3732084f",
+        "android_client_info": {
+          "package_name": "com.example.midnightwish"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFS5xTT-Jbu17o2YUmms4ouk7MEDa7Bnc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
