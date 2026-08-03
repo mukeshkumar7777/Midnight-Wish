@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /wishes/{wishId} {
+      // Anyone can read a specific wish if they know its ID
+      allow get: if true;
+      
+      // Only authenticated users can create wishes
+      allow create: if request.auth != null;
+      
+      // Only the owner of the wish can list, update, or delete it
+      allow list, update, delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
+    }
+  }
+}
