@@ -34,11 +34,16 @@ export default function Dashboard() {
       try {
         const q = query(
           collection(db, "wishes"),
-          where("ownerUid", "==", user.uid),
-          orderBy("createdAt", "desc")
+          where("ownerUid", "==", user.uid)
         );
         const snap = await getDocs(q);
-        setWishes(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+        const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        list.sort((a, b) => {
+          const tA = a.createdAt?.toDate?.()?.getTime() || 0;
+          const tB = b.createdAt?.toDate?.()?.getTime() || 0;
+          return tB - tA;
+        });
+        setWishes(list);
       } catch (err) {
         console.error(err);
       } finally {
