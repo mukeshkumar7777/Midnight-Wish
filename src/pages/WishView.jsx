@@ -65,6 +65,16 @@ function Confetti({ theme }) {
   );
 }
 
+function getTargetTime(dt) {
+  if (!dt) return Date.now();
+  if (typeof dt.toDate === "function") return dt.toDate().getTime();
+  if (typeof dt.toMillis === "function") return dt.toMillis();
+  if (dt.seconds) return dt.seconds * 1000;
+  if (dt instanceof Date) return dt.getTime();
+  const parsed = new Date(dt).getTime();
+  return isNaN(parsed) ? Date.now() : parsed;
+}
+
 export default function WishView() {
   const { id } = useParams();
 
@@ -77,13 +87,27 @@ export default function WishView() {
 
   /* ── Fetch wish ──────────────────────────────── */
   useEffect(() => {
+    if (!id) {
+      console.warn("[MidnightWish] No wish ID in URL.");
+      setNotFound(true);
+      setLoading(false);
+      return;
+    }
+
     (async () => {
       try {
+        console.log(`[MidnightWish] Fetching wish document with ID: "${id}"`);
         const snap = await getDoc(doc(db, "wishes", id));
-        if (!snap.exists()) { setNotFound(true); setLoading(false); return; }
+        if (!snap.exists()) {
+          console.warn(`[MidnightWish] Document does not exist in Firestore for ID: "${id}"`);
+          setNotFound(true);
+          setLoading(false);
+          return;
+        }
         const data = snap.data();
+        console.log("[MidnightWish] Wish found:", data);
         setWish(data);
-        const target = data.birthdayDateTime.toDate().getTime();
+        const target = getTargetTime(data.birthdayDateTime);
         const initial = getTimeLeft(target);
         if (!initial) {
           // already past — go straight to celebration
@@ -93,7 +117,7 @@ export default function WishView() {
           setTimeLeft(initial);
         }
       } catch (err) {
-        console.error(err);
+        console.error("[MidnightWish] Error fetching wish:", err);
         setNotFound(true);
       } finally {
         setLoading(false);
@@ -104,7 +128,7 @@ export default function WishView() {
   /* ── Live countdown tick ─────────────────────── */
   useEffect(() => {
     if (!wish || celebrating || cakeOpen) return;
-    const target = wish.birthdayDateTime.toDate().getTime();
+    const target = getTargetTime(wish.birthdayDateTime);
     const timer = setInterval(() => {
       const tl = getTimeLeft(target);
       if (!tl) {

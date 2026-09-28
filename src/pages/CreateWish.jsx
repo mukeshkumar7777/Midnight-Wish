@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { db } from "../firebase";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
-import { Sparkles, ArrowLeft, Copy, Check, Gift } from "lucide-react";
+import { Sparkles, ArrowLeft, Copy, Check, Gift, ExternalLink } from "lucide-react";
 import "../wish.css";
 
 const THEMES = [
@@ -90,7 +90,14 @@ export default function CreateWish() {
               {copied ? <><Check size={15} /> Copied!</> : <><Copy size={15} /> Copy</>}
             </button>
           </div>
-          <div style={{ display: "flex", gap: 12, marginTop: 28, justifyContent: "center" }}>
+          <div style={{ display: "flex", gap: 12, marginTop: 28, justifyContent: "center", flexWrap: "wrap" }}>
+            <Link
+              to={`/wish/${wishId}`}
+              className="create-submit-btn"
+              style={{ height: 44, padding: "0 22px", margin: 0, fontSize: 14, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}
+            >
+              <ExternalLink size={15} /> Open Wish Page
+            </Link>
             <button
               onClick={() => { setWishId(null); setForm({ recipientName:"", birthdayDateTime:"", message:"", theme:"classic" }); }}
               className="copy-btn"
@@ -100,8 +107,8 @@ export default function CreateWish() {
             </button>
             <button
               onClick={() => navigate("/dashboard")}
-              className="create-submit-btn"
-              style={{ height: 44, padding: "0 22px", margin: 0, fontSize: 14 }}
+              className="copy-btn"
+              style={{ height: 44, padding: "0 20px", fontSize: 14, background: "rgba(255,255,255,0.08)" }}
             >
               <Sparkles size={15} /> Dashboard
             </button>

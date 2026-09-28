@@ -4,12 +4,12 @@ import {
   Sparkles, Gift, Heart, Cake, LinkIcon, CalendarHeart,
   ArrowRight, Check, Star, Zap, Share2, Clock,
 } from "lucide-react";
-import Login      from "./pages/Login";
-import Register   from "./pages/Register";
-import Dashboard  from "./pages/Dashboard";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
 import CreateWish from "./pages/CreateWish";
-import WishView   from "./pages/WishView";
-import NotFound   from "./pages/NotFound";
+import WishView from "./pages/WishView";
+import NotFound from "./pages/NotFound";
 import { useAuth } from "./context/AuthContext";
 
 /* ── Protected Route ─────────────────────────────── */
@@ -59,7 +59,7 @@ function useReveal() {
 /* ── Navbar ──────────────────────────────────────── */
 function Navbar({ scrolled }) {
   const { user } = useAuth();
-  const navigate  = useNavigate();
+  const navigate = useNavigate();
   return (
     <nav className={`navbar${scrolled ? " navbar--scrolled" : ""}`}>
       <Link to="/" className="logo" style={{ textDecoration: "none" }}>
@@ -90,7 +90,7 @@ function Navbar({ scrolled }) {
 /* ── Landing Page ────────────────────────────────── */
 function Home() {
   const { user } = useAuth();
-  const navigate  = useNavigate();
+  const navigate = useNavigate();
   const countdown = useDemoCountdown();
   const [scrolled, setScrolled] = useState(false);
 
@@ -105,10 +105,10 @@ function Home() {
   const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
   /* Section reveal refs */
-  const [statsRef,   statsVis]   = useReveal();
-  const [howRef,     howVis]     = useReveal();
+  const [statsRef, statsVis] = useReveal();
+  const [howRef, howVis] = useReveal();
   const [featureRef, featureVis] = useReveal();
-  const [ctaRef,     ctaVis]     = useReveal();
+  const [ctaRef, ctaVis] = useReveal();
 
   const STEPS = [
     {
@@ -182,11 +182,11 @@ function Home() {
       <div className="starfield" aria-hidden="true">
         {Array.from({ length: 50 }).map((_, i) => (
           <div key={i} className="star" style={{
-            left:              `${Math.random() * 100}%`,
-            top:               `${Math.random() * 100}%`,
-            width:             `${1 + Math.random() * 2}px`,
-            height:            `${1 + Math.random() * 2}px`,
-            animationDelay:    `${Math.random() * 4}s`,
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            width: `${1 + Math.random() * 2}px`,
+            height: `${1 + Math.random() * 2}px`,
+            animationDelay: `${Math.random() * 4}s`,
             animationDuration: `${3 + Math.random() * 4}s`,
           }} />
         ))}
@@ -357,7 +357,7 @@ function Home() {
             <button className="footer-link" onClick={() => navigate("/login")}>Sign In</button>
             <button className="footer-link" onClick={() => scrollTo("how-it-works")}>How it works</button>
           </div>
-          <p className="footer-copy">© {new Date().getFullYear()} MidnightWish. Made with ✨</p>
+          <p className="footer-copy">© {new Date().getFullYear()} Mukesh Kumar Sanivada. All rights reserved.</p>
         </div>
       </footer>
     </main>
@@ -368,13 +368,13 @@ function Home() {
 export default function App() {
   return (
     <Routes>
-      <Route path="/"          element={<Home />} />
-      <Route path="/login"     element={<Login />} />
-      <Route path="/register"  element={<Register />} />
-      <Route path="/wish/:id"  element={<WishView />} />
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/wish/:id" element={<WishView />} />
       <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
-      <Route path="/create"    element={<Protected><CreateWish /></Protected>} />
-      <Route path="*"          element={<NotFound />} />
+      <Route path="/create" element={<Protected><CreateWish /></Protected>} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

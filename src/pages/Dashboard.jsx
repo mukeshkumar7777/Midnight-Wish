@@ -6,17 +6,29 @@ import {
   collection, query, where, orderBy, getDocs,
   deleteDoc, doc,
 } from "firebase/firestore";
-import { Sparkles, LogOut, Plus, Copy, Check, Trash2, Home } from "lucide-react";
+import { Sparkles, LogOut, Plus, Copy, Check, Trash2, Home, ExternalLink } from "lucide-react";
 import "../wish.css";
 
+function toMillis(ts) {
+  if (!ts) return 0;
+  if (typeof ts.toDate === "function") return ts.toDate().getTime();
+  if (typeof ts.toMillis === "function") return ts.toMillis();
+  if (ts.seconds) return ts.seconds * 1000;
+  if (ts instanceof Date) return ts.getTime();
+  const parsed = new Date(ts).getTime();
+  return isNaN(parsed) ? 0 : parsed;
+}
+
 function formatDate(ts) {
-  if (!ts) return "";
-  const d = ts.toDate();
+  const ms = toMillis(ts);
+  if (!ms) return "";
+  const d = new Date(ms);
   return d.toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric", hour:"2-digit", minute:"2-digit" });
 }
 
 function isUpcoming(ts) {
-  return ts && ts.toDate().getTime() > Date.now();
+  const ms = toMillis(ts);
+  return ms > Date.now();
 }
 
 export default function Dashboard() {
@@ -32,20 +44,22 @@ export default function Dashboard() {
     if (!user) return;
     (async () => {
       try {
+        console.log(`[MidnightWish] Fetching dashboard wishes for user UID: "${user.uid}"`);
         const q = query(
           collection(db, "wishes"),
           where("ownerUid", "==", user.uid)
         );
         const snap = await getDocs(q);
         const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        console.log(`[MidnightWish] Found ${list.length} wishes for user:`, list);
         list.sort((a, b) => {
-          const tA = a.createdAt?.toDate?.()?.getTime() || 0;
-          const tB = b.createdAt?.toDate?.()?.getTime() || 0;
+          const tA = toMillis(a.createdAt);
+          const tB = toMillis(b.createdAt);
           return tB - tA;
         });
         setWishes(list);
       } catch (err) {
-        console.error(err);
+        console.error("[MidnightWish] Error loading user wishes:", err);
       } finally {
         setFetching(false);
       }
@@ -154,6 +168,15 @@ export default function Dashboard() {
                     </span>
                   </p>
                 </div>
+
+                <Link
+                  to={`/wish/${w.id}`}
+                  className="wish-copy-btn"
+                  style={{ textDecoration: "none" }}
+                  title="View wish countdown"
+                >
+                  <ExternalLink size={14} /> View
+                </Link>
 
                 <button
                   className={`wish-copy-btn ${copied === w.id ? "copied" : ""}`}
